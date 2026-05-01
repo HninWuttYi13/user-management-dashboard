@@ -13,76 +13,79 @@ import {
   getUserByIdService,
   updateUserService,
 } from "./user.service.js";
-import type { UserIdParam } from "../../types/idParams.types.js";
 
+// GET /api/users — returns paginated and filtered user list
 export const getAllUsers = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
   try {
-    // Cast req.query — Zod validator already transformed and validated it
     const query = req.query as unknown as GetAllUserInput;
-
     const result = await getAllUserService(req, query);
-
     successResponse(res, result, "Users fetched successfully");
   } catch (error) {
     next(error);
   }
 };
 
+// POST /api/users — creates a new user, returns 201
 export const createUser = async (
-  req: Request<unknown, CreateUserInput, unknown>,
+  req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): Promise<void> => {
   try {
     const body = req.body as unknown as CreateUserInput;
     const result = await createUserService(body);
-    successResponse(res, result, "User is created successfully");
+    successResponse(res, result, "User created successfully", 201);
   } catch (error) {
     next(error);
   }
 };
 
+// GET /api/users/:id — returns single user by UUID
 export const getUserById = async (
-  req: Request<UserIdParam>,
+  req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): Promise<void> => {
   try {
-    const id = req.params as unknown as IdParamsInput;
-    const result = await getUserByIdService(id);
+    const params = req.params as unknown as IdParamsInput;
+    const result = await getUserByIdService(params);
     successResponse(res, result, "User retrieved successfully");
   } catch (error) {
     next(error);
   }
 };
-export const updateUser = async(
-    req: Request<UserIdParam, unknown, UpdateUserBodyInput>,
-    res: Response,
-    next: NextFunction
-)=> {
-    try {
-        const id = req.params as unknown as IdParamsInput;
-        const body = req.body as unknown as UpdateUserBodyInput;
-        const result = await updateUserService(id, body);
-        successResponse(res, result, "User is updated successfully");
-    } catch (error) {
-        next(error);
-    }
-}
-export const deleteUser = async(
-    req: Request<UserIdParam>,
-    res: Response,
-    next: NextFunction,
-) => {
-    try {
-        const id = req.params as unknown as IdParamsInput;
-        const result = await deleteUserService(id);
-        successResponse(res, null, "User deleted successfully");
-    } catch (error) {
-        next(error);
-    }
-}
+
+// PUT /api/users/:id — updates user fields, returns updated user
+export const updateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const params = req.params as unknown as IdParamsInput;
+    const body = req.body as unknown as UpdateUserBodyInput;
+    const result = await updateUserService(params, body);
+    successResponse(res, result, "User updated successfully");
+  } catch (error) {
+    next(error);
+  }
+};
+
+// DELETE /api/users/:id — deletes user, returns success message
+export const deleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const params = req.params as unknown as IdParamsInput;
+    await deleteUserService(params);
+    successResponse(res, null, "User deleted successfully");
+  } catch (error) {
+    next(error);
+  }
+};
