@@ -8,6 +8,7 @@ import type {
 import { successResponse } from "../../utils/response.js";
 import {
   createUserService,
+  deleteUserService,
   getAllUserService,
   getUserByIdService,
   updateUserService,
@@ -68,6 +69,19 @@ export const updateUser = async(
         const body = req.body as unknown as UpdateUserBodyInput;
         const result = await updateUserService(id, body);
         successResponse(res, result, "User is updated successfully");
+    } catch (error) {
+        next(error);
+    }
+}
+export const deleteUser = async(
+    req: Request<UserIdParam>,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const id = req.params as unknown as IdParamsInput;
+        const result = await deleteUserService(id);
+        successResponse(res, null, "User deleted successfully");
     } catch (error) {
         next(error);
     }

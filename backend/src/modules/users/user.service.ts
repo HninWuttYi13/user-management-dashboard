@@ -113,3 +113,15 @@ export const updateUserService = async (
   await writeUsers(updatedUsers);
   return updatedUser;
 };
+//delete user service
+export const deleteUserService =  async(data: IdParamsInput): Promise<void> => {
+    const users = await readUsers();
+
+    // Check user exists before attempting delete
+    const existingUser = users.find((u) => u.id === data.id);
+    if (!existingUser) throw new AppError("User not found", 404);
+
+    // Filter out deleted user and write back to file
+    const updatedUsers = users.filter((u) => u.id !== data.id);
+    await writeUsers(updatedUsers);
+}
