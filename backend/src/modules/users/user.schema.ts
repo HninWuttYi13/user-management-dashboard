@@ -28,6 +28,11 @@ export const createUserSchema = z.object({
     })
     .strict(),
 });
-
+export const idParamSchema = z.object({
+  params: z.object({
+    id: z.string().uuid("Invalid ID format"), // ← validates proper UUID format
+  }),
+});
 export type GetAllUserInput = z.infer<typeof getAllUsersSchema>["query"];
 export type CreateUserInput = z.infer<typeof createUserSchema>["body"];
+export type IdParamsInput = z.infer<typeof idParamSchema>['params'];

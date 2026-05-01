@@ -1,7 +1,7 @@
 import type { Request } from "express";
 import { readUsers, writeUsers } from "../../helper/fileHelper.js";
 import { generatePaginationData } from "../../helper/paginationHelper.js";
-import type { CreateUserInput, GetAllUserInput } from "./user.schema.js";
+import type { CreateUserInput, GetAllUserInput, IdParamsInput } from "./user.schema.js";
 import type { User } from "../../types/user.types.js";
 import type { PaginationData } from "../../helper/paginationHelper.js"
 import { AppError } from "../../utils/AppError.js";
@@ -63,3 +63,10 @@ export const createUserService = async (
 
   return newUser;
 };
+//getUserById service
+export const getUserByIdService = async(data: IdParamsInput):Promise<User> => {
+    const users = await readUsers();
+    const user = users.find(u => u.id === data.id);
+    if(!user) throw new AppError("User is not found", 404);
+    return user;
+}
