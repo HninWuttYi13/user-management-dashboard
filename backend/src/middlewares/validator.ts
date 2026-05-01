@@ -8,7 +8,7 @@ type RequestData = {
   query?: Record<string, unknown>;
 };
 export const validator = 
-<T extends ZodTypeAny>(schema: T) => {
+<T extends ZodTypeAny>(schema: T) => 
     async(req: Request, res: Response, next: NextFunction)=> {
         try {
             //combine request parts into one object for schema validation
@@ -58,4 +58,3 @@ export const validator =
             return  errorResponse(res, null, 'Internal Server Error', 500);
         }
     }
-}

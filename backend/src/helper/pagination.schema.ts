@@ -1,8 +1,6 @@
 import { z } from "zod";
 
 export const PaginationQuerySchema = z.object({
-  query: z
-    .object({
       page: z
         .string()
         .regex(/^\d+$/, "Page must be a positive number") 
@@ -19,7 +17,7 @@ export const PaginationQuerySchema = z.object({
         .optional()
         .default(10),
     })
-    .strict(),
-});
+    .strict();
 
-export type PaginationQueryType = z.infer<typeof PaginationQuerySchema>;
+
+    export type PaginationQueryType = z.infer<typeof PaginationQuerySchema>;
