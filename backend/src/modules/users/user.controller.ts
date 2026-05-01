@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
-import type { GetAllUserInput } from "./user.schema.js";
+import type { CreateUserInput, GetAllUserInput } from "./user.schema.js";
 import { successResponse } from "../../utils/response.js";
-import { getAllUserService } from "./user.service.js";
+import { createUserService, getAllUserService } from "./user.service.js";
 
 export const getAllUsers = async (
   req: Request,
@@ -20,3 +20,17 @@ export const getAllUsers = async (
     next(error);
   }
 };
+
+export const createUser = async(
+    req: Request<unknown, CreateUserInput, unknown>,
+    res: Response,
+    next: NextFunction
+)=> {
+    try {
+        const body = req.body as unknown as CreateUserInput;
+        const result = await createUserService(body);
+        successResponse(res, result, 'User is created successfully');
+    } catch (error) {
+        next(error);
+    }
+}

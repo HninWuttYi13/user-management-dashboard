@@ -1,9 +1,10 @@
 import type { Request } from "express";
-import { readUsers } from "../../helper/fileHelper.js";
+import { readUsers, writeUsers } from "../../helper/fileHelper.js";
 import { generatePaginationData } from "../../helper/paginationHelper.js";
-import type { GetAllUserInput } from "./user.schema.js";
+import type { CreateUserInput, GetAllUserInput } from "./user.schema.js";
 import type { User } from "../../types/user.types.js";
-import type { PaginationData } from "../../helper/paginationHelper.js";
+import type { PaginationData } from "../../helper/paginationHelper.js"
+import { AppError } from "../../utils/AppError.js";
 interface GetAllUsersResult {
     users: User[];
     pagination: PaginationData;
@@ -41,3 +42,24 @@ export const getAllUserService = async(
     const pagination = generatePaginationData(req, total, page, limit);
     return {users: paginated, pagination};
 }
+//create user service
+export const createUserService = async (
+  data: CreateUserInput,
+): Promise<User> => {
+  const users = await readUsers();
+  // Check for existing email — 409 Conflict is correct status
+  const isEmailExist = users.find((u) => u.email === data.email);
+  if (isEmailExist) throw new AppError("Email already exists", 409);
+
+  // Check for existing username — usernames must also be unique
+  const isUsernameExist = users.find((u) => u.username === data.username);
+  if (isUsernameExist) throw new AppError("Username already exists", 409);
+  const newUser: User = {
+    id: crypto.randomUUID(), // generate Unique ID
+    ...data,
+  };
+  users.push(newUser);
+  await writeUsers(users); //store in json file
+
+  return newUser;
+};
