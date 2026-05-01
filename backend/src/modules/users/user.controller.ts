@@ -3,12 +3,14 @@ import type {
   CreateUserInput,
   GetAllUserInput,
   IdParamsInput,
+  UpdateUserBodyInput,
 } from "./user.schema.js";
 import { successResponse } from "../../utils/response.js";
 import {
   createUserService,
   getAllUserService,
   getUserByIdService,
+  updateUserService,
 } from "./user.service.js";
 import type { UserIdParam } from "../../types/idParams.types.js";
 
@@ -56,3 +58,17 @@ export const getUserById = async (
     next(error);
   }
 };
+export const updateUser = async(
+    req: Request<UserIdParam, unknown, UpdateUserBodyInput>,
+    res: Response,
+    next: NextFunction
+)=> {
+    try {
+        const id = req.params as unknown as IdParamsInput;
+        const body = req.body as unknown as UpdateUserBodyInput;
+        const result = await updateUserService(id, body);
+        successResponse(res, result, "User is updated successfully");
+    } catch (error) {
+        next(error);
+    }
+}

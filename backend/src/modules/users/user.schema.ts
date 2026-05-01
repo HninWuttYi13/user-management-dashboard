@@ -33,6 +33,34 @@ export const idParamSchema = z.object({
     id: z.string().uuid("Invalid ID format"), // ← validates proper UUID format
   }),
 });
+export const updateUserSchema = z.object({
+  params: idParamSchema.shape.params, // ✅ reusing idParamSchema — good DRY thinking
+
+  body: z
+    .object({
+      name: z
+        .string()
+        .min(3, "Name must be at least 3 characters")
+        .trim()
+        .optional(),
+
+      username: z
+        .string()
+        .min(3, "Username must be at least 3 characters")
+        .trim()
+        .optional(),
+
+      email: z
+        .string()
+        .email("Invalid email format")
+        .trim()
+        .transform((val) => val.toLowerCase())
+        .optional(),
+    })
+    .strict(),
+});
+
 export type GetAllUserInput = z.infer<typeof getAllUsersSchema>["query"];
 export type CreateUserInput = z.infer<typeof createUserSchema>["body"];
 export type IdParamsInput = z.infer<typeof idParamSchema>['params'];
+export type UpdateUserBodyInput = z.infer<typeof updateUserSchema>['body'];
