@@ -5,7 +5,7 @@
   "type": "module",
   "private": false,
   "scripts": {
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'tsx' src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js"
   },
