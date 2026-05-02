@@ -9,13 +9,33 @@ const httpClient = axios.create({
     },
     timeout: 10000, //fail request after 10 seconds instead of hanging forever
 });
+//Shape of backend error response
+interface BackendErrorResponse {
+    success: boolean;
+    message: string;
+    error?: Array<{path: string; message: string}> | null;
+   
+    
+    
+}
 //Response interceptor- unwrap data or throw consistent errors
 httpClient.interceptors.response.use(
     (response: AxiosResponse) => response,
     (error: AxiosError) => {
-        //pass structured error message from backend
-        const message = 
-        (error.response?.data as {message?: string})?.message ?? error.message ?? "Something went wrong";
+        const data = error.response?.data as BackendErrorResponse | undefined;
+        let message = "Something went wrong";
+        if(data) {
+            //if backend returns field-level errors -join them
+            //e.g-"body.username: Username must be at least 3 characters"
+            if(Array.isArray(data.error) && data.error.length > 0) {
+                message = data.error
+                .map((e)=> e.message)
+                .join(", ")
+            }
+        } else {
+            //fall back to top-level message
+            message = data.message ?? message;
+        }
         return Promise.reject(new Error(message));
     }
 );
