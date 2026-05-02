@@ -11,7 +11,12 @@ const app = express();
 app.use(helmet());
 
 // Restrict CORS to frontend origin only
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CLIENT_ORIGIN ?? "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  }),
+);
 
 // Parse incoming JSON and URL-encoded request bodies
 app.use(express.json());
