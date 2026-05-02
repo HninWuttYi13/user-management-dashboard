@@ -4,6 +4,7 @@ interface InputProps {
   name: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>)=> void;
   placeholder?: string;
   type?: string;
   error?: string;
@@ -14,6 +15,7 @@ export const Input = ({
   name,
   value,
   onChange,
+  onKeyDown,
   placeholder,
   type = "text",
   error,
@@ -36,6 +38,7 @@ export const Input = ({
         type={type}
         value={value}
         onChange={onChange}
+        onKeyDown={onKeyDown}
         placeholder={placeholder}
         disabled={disabled}
         style={{
