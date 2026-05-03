@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { useUsers } from "./hooks/useUser.js";
+import { useUsers } from "./hooks/useUsers.js";
 import { SearchBar } from "./components/SearchBar.js";
 import { UserList } from "./components/UserList.js";
 import { UserForm } from "./components/UseForm.js";
+import { useToast } from "./hooks/useToast.js";
 import { Pagination } from "./components/Pagination.js";
 import { Button } from "./components/ui/Button.js";
+import { Toast } from "./components/ui/Toast.js";
 import { theme } from "./utils/theme.js";
 import type {
   CreateUserInput,
@@ -26,7 +28,7 @@ const App = () => {
     handleUpdate,
     handleDelete,
   } = useUsers();
-
+  const { toast, showToast, hideToast } = useToast();
   //  Local UI State
   // Controls form visibility and which user is being edited
   const [showForm, setShowForm] = useState(false);
@@ -58,16 +60,29 @@ const App = () => {
     data: CreateUserInput | UpdateUserInput,
   ): Promise<void> => {
     if (id) {
-      // Update mode — id exists
-      await handleUpdate(id, data as UpdateUserInput);
+      // Update mode — id exists and extract message from response
+     const response = await handleUpdate(id, data as UpdateUserInput);
+     showToast(response.message, "success")
     } else {
       // Create mode — no id
-      await handleCreate(data as CreateUserInput);
+      const response =await handleCreate(data as CreateUserInput);
+      showToast(response.message, "success");
     }
     // Close form after successful submission
     handleCancel();
   };
-
+//handle delete -show message from backend in toast
+const handleDeleteWithToast = async(id: string): Promise<void>=> {
+  try {
+    const response = await handleDelete(id);
+    showToast(response.message, "success")
+  } catch (err) {
+    showToast(
+      err instanceof Error ? err.message : "Failed to delete user",
+      "error",
+    );
+  }
+}
   //  Render 
   return (
     <div style={{ backgroundColor: theme.colors.navyBg, minHeight: "100vh" }}>
@@ -86,7 +101,7 @@ const App = () => {
                 color: theme.colors.textPrimary,
                 borderLeftColor: theme.colors.border,
               }}
-              className="text-md"
+              className="text-md font-bold"
             >
               User Management
             </span>
@@ -100,7 +115,6 @@ const App = () => {
           />
         </div>
       </header>
-
       {/* Main content */}
       <main className="max-w-5xl mx-auto px-6 py-8">
         {/* Create / Edit Form */}
@@ -122,7 +136,7 @@ const App = () => {
           users={users}
           isLoading={isLoading}
           error={error}
-          onDelete={handleDelete}
+          onDelete={handleDeleteWithToast}
           onUpdate={handleOpenEdit}
         />
 
@@ -131,6 +145,10 @@ const App = () => {
           <Pagination pagination={pagination} onPageChange={handlePageChange} />
         )}
       </main>
+      {/* Toast — fixed bottom right, auto dismisses */}
+      {toast.visible && (
+        <Toast message={toast.message} type={toast.type} onClose={hideToast} />
+      )}
     </div>
   );
 };
