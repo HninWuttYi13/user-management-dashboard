@@ -216,7 +216,7 @@ Error response:
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/user-management-dashboard.git
+ https://github.com/HninWuttYi13/user-management-dashboard
 cd user-management-dashboard
 ```
 
