@@ -6,10 +6,6 @@ A full-stack User Management Dashboard built with **React + TypeScript** (fronte
 
 ## Screenshots
 
-> _Add your screenshots here after taking them_
-
-<!-- Replace the placeholders below with your actual screenshots -->
-
 | Dashboard | Create User |
 |-----------|-------------|
 | ![Dashboard](./screenshots/dashboard.png) | ![Create User](./screenshots/create-user.png) |
