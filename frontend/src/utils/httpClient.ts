@@ -14,9 +14,6 @@ interface BackendErrorResponse {
     success: boolean;
     message: string;
     error?: Array<{path: string; message: string}> | null;
-   
-    
-    
 }
 //Response interceptor- unwrap data or throw consistent errors
 httpClient.interceptors.response.use(
@@ -27,14 +24,12 @@ httpClient.interceptors.response.use(
         if(data) {
             //if backend returns field-level errors -join them
             //e.g-"body.username: Username must be at least 3 characters"
-            if(Array.isArray(data.error) && data.error.length > 0) {
-                message = data.error
-                .map((e)=> e.message)
-                .join(", ")
-            }
-        } else {
-            //fall back to top-level message
-            message = data.message ?? message;
+            if (Array.isArray(data.error) && data.error.length > 0) {
+              message = data.error.map((e) => e.message).join(", ");
+            } else {
+              //fall back to top-level message
+              message = data.message ?? message;
+            } 
         }
         return Promise.reject(new Error(message));
     }
