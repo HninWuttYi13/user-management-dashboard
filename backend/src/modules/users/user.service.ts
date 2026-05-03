@@ -7,7 +7,7 @@ import type {
   IdParamsInput,
   UpdateUserBodyInput,
 } from "./user.schema.js";
-import type { UpdateUserInput, User } from "../../types/user.types.js";
+import type {  User } from "../../types/user.types.js";
 import type { PaginationData } from "../../helper/paginationHelper.js";
 import { AppError } from "../../utils/AppError.js";
 interface GetAllUsersResult {
@@ -42,13 +42,16 @@ export const getAllUserService = async (
   }
   //Total count after filtering
   const total = users.length;
+  // Sort alphabetically by name before paginating
+  users = users.sort((a, b) => a.name.localeCompare(b.name));
+
   //Slice correct page
   const skip = (page - 1) * limit;
   const paginated = users.slice(skip, skip + limit);
   //Generate pagination meta and next/prev links
   const pagination = generatePaginationData(req, total, page, limit);
   return { users: paginated, pagination };
-};
+};;
 //create user service
 export const createUserService = async (
   data: CreateUserInput,
