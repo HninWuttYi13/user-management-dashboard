@@ -69,11 +69,11 @@ user-management-dashboard/
 │   │   │   └── user.types.ts
 │   │   ├── utils/
 │   │   │   ├── AppError.ts
-│   │   │   ├── fileHelper.ts
 │   │   │   └── response.ts
 │   │   ├── helper/
 │   │   │   ├── pagination.schema.ts
 │   │   │   └── paginationHelper.ts
+|   |   |   └──fileHelper.ts
 │   │   ├── app.ts
 │   │   └── server.ts
 │   ├── .env.example
